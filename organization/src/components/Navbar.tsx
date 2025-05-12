@@ -35,6 +35,11 @@ export default function Navbar() {
                             Consents
                         </NavLink>
                     </li>
+                    <li className="nav-item">
+                        <NavLink to="/addconsents" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                            AddConsents
+                        </NavLink>
+                    </li>
                 </ul>
             </div>
         </nav>

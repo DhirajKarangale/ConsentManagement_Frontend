@@ -4,7 +4,7 @@ import { type RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 
 import { getRequest } from "../utils/APIManager";
-import { uri_consents } from "../utils/APIs";
+import { uri_allconsents } from "../utils/APIs";
 
 
 export default function Consents() {
@@ -41,7 +41,7 @@ export default function Consents() {
     }
 
     async function loadConsents() {
-        const response = await getRequest<Consnet[]>(`${uri_consents}/1`);
+        const response = await getRequest<Consnet[]>(`${uri_allconsents}/1`);
 
         if (response.success) {
             if (response.data) setConsnet(response.data);
@@ -55,7 +55,7 @@ export default function Consents() {
         <>
             <div className="container">
 
-                <h1 className="text-center display-6 mt-0" style={{ fontSize: '2.0rem' }}>Consents <hr /> </h1>
+                <h1 className="text-center display-6 mt-3" style={{ fontSize: '2.0rem' }}>Consents <hr /> </h1>
 
                 <div className="row p-0 m-0">
 
