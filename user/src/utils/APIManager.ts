@@ -15,7 +15,7 @@ export const getRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
             data: response.data,
         };
     } catch (error: any) {
-        const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+        const errorMessage = error.response?.data || error.message || 'Unknown error';
 
         return {
             success: false,
@@ -33,7 +33,7 @@ export const postRequest = async <T>(url: string, body: Record<string, any>): Pr
             data: response.data,
         };
     } catch (error: any) {
-        const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+        const errorMessage = error.response?.data || error.message || 'Unknown error';
 
         return {
             success: false,
@@ -51,7 +51,7 @@ export const putRequest = async <T>(url: string, body: Record<string, any>): Pro
             data: response.data,
         };
     } catch (error: any) {
-        const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+        const errorMessage = error.response?.data || error.message || 'Unknown error';
 
         return {
             success: false,

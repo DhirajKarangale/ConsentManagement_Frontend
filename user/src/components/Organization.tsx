@@ -11,13 +11,20 @@ export default function Organization() {
         id: number,
         organizationId: number,
         name: string,
-        isOptional: boolean,
+        optional: boolean,
         version: number,
         description: string,
         expiry: Date,
         status: string,
         createdAt: Date,
-        isAccepted: boolean,
+        accepted: boolean,
+    }
+
+    type UserConsnet = {
+        id: number,
+        userId: number,
+        consentId: number,
+        accepted: boolean,
     }
 
     const navigate = useNavigate();
@@ -36,6 +43,12 @@ export default function Organization() {
         checkLogin();
         loadConsents();
     }, []);
+
+    useEffect(() => {
+        const canContinue = consents.every(c => c.accepted || c.optional);
+        setIsContinueBtn(canContinue);
+    }, [consents]);
+
 
     function checkLogin() {
         if (!user || !organization) {
@@ -63,19 +76,19 @@ export default function Organization() {
         const updatedConsents: Consnet[] = [];
 
         for (const consent of consentsToCheck) {
-            try {
-                const response = await getRequest<{ isAccepted: boolean }>(`${uri_checkuserconsent}/${consent.id}/${user.id}`);
-                const isAccepted = response.data?.isAccepted ?? false;
+            const response = await getRequest<UserConsnet>(`${uri_checkuserconsent}/${user.id}/${consent.id}`);
+            if (response.data) {
+                const accepted = response.data?.accepted ?? false;
 
                 updatedConsents.push({
                     ...consent,
-                    isAccepted: isAccepted,
+                    accepted: accepted,
                 });
-            } catch (err) {
-                updatedConsents.push({ ...consent, isAccepted: false });
+            }
+            else {
+                updatedConsents.push({ ...consent, accepted: false });
             }
         }
-
         setConsnets(updatedConsents);
     }
 
@@ -84,8 +97,8 @@ export default function Organization() {
         setShowModal(true);
     }
 
-    async function setConsent(isAccepted: boolean) {
-        const uri = `${uri_updateuserConsent}/${user?.id}/${selectedConsent?.id}/${isAccepted}`
+    async function setConsent(accepted: boolean) {
+        const uri = `${uri_updateuserConsent}/${user?.id}/${selectedConsent?.id}/${accepted}`
         const response = await postRequest(uri, {});
 
         if (response.success) {
@@ -93,12 +106,12 @@ export default function Organization() {
             setConsnets(prev =>
                 prev.map(item =>
                     item.id === selectedConsent?.id
-                        ? { ...item, isAccepted: isAccepted }
+                        ? { ...item, accepted: accepted }
                         : item
                 )
             );
 
-            setMsg(`Consent '${selectedConsent?.name}' ${isAccepted ? "ACCEPTED" : "REJECTED"}`);
+            setMsg(`Consent '${selectedConsent?.name}' ${accepted ? "ACCEPTED" : "REJECTED"}`);
             setMsgColor('text-success');
         } else {
             setMsgColor('text-danger');
@@ -107,8 +120,6 @@ export default function Organization() {
 
         setTimeout(() => { setMsg(''); }, 1000);
         setShowModal(false);
-        const canContinue = consents.every(c => c.isAccepted || c.isOptional);
-        setIsContinueBtn(canContinue);
     }
 
     function uiModel() {
@@ -134,7 +145,7 @@ export default function Organization() {
                                     <p className="m-1 p-0"><strong>Organization ID:</strong> {selectedConsent.organizationId}</p>
                                     <p className="m-1 p-0"><strong>Name:</strong> {selectedConsent.name}</p>
                                     <p className="m-1 p-0"><strong>Version:</strong> {selectedConsent.version}</p>
-                                    <p className="m-1 p-0"><strong>Is Optional:</strong> {selectedConsent.isOptional ? 'Yes' : 'No'}</p>
+                                    <p className="m-1 p-0"><strong>Is Optional:</strong> {selectedConsent.optional ? 'Yes' : 'No'}</p>
                                     <p className="m-1 p-0"><strong>Status:</strong> {selectedConsent.status}</p>
                                     <p className="m-1 p-0"><strong>Created On:</strong> {new Date(selectedConsent?.createdAt).toDateString()}</p>
                                     <p className="m-1 p-0"><strong>Expiry:</strong> {new Date(selectedConsent?.expiry).toDateString()}</p>
@@ -157,7 +168,7 @@ export default function Organization() {
                                     <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100">
 
                                         <div className="d-flex gap-3 align-self-end">
-                                            {!selectedConsent.isAccepted ? <button className={`btn btn-sm ${selectedConsent.status === 'ACCEPTED' ? 'btn-success' : 'btn-outline-success'}`}
+                                            {!selectedConsent.accepted ? <button className={`btn btn-sm ${selectedConsent.status === 'ACCEPTED' ? 'btn-success' : 'btn-outline-success'}`}
                                                 onClick={() => { setConsent(true); }}>ACCEPT</button> :
                                                 <button className={`btn btn-sm ${selectedConsent.status === 'REJECTED' ? 'btn-danger' : 'btn-outline-danger'}`}
                                                     onClick={() => { setConsent(false); }}>REJECT</button>}
@@ -185,12 +196,12 @@ export default function Organization() {
                             key={consent.id}
                             className="list-group-item bg-dark text-white d-flex justify-content-between align-items-center border-white mb-2">
                             <div>
-                                <strong>{consent.name}{!consent.isOptional && <span className="text-light"> * </span>}</strong>
+                                <strong>{consent.name}{!consent.optional && <span className="text-light"> * </span>}</strong>
                                 <span className="text-light">({consent.version})</span>
                             </div>
                             <div className="btn-group">
                                 {
-                                    !consent.isAccepted ? <button
+                                    !consent.accepted ? <button
                                         className={`btn btn-sm ${consent.status === 'ACCEPTED' ? 'btn-success' : 'btn-outline-success'}`}
                                         onClick={() => selectConsent(consent)}> Accept </button>
                                         :
@@ -204,7 +215,7 @@ export default function Organization() {
                 </div>
 
                 <div className="text-center mt-4">
-                    <button className="btn btn-primary px-4 py-2" disabled={isContinueBtn} onClick={() => navigate('/dashboard')} >Continue</button>
+                    <button className="btn btn-primary px-4 py-2" disabled={!isContinueBtn} onClick={() => navigate('/dashboard')} >Continue</button>
                 </div>
 
             </div>
