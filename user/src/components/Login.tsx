@@ -13,13 +13,13 @@ export default function Home() {
 
     const navigate = useNavigate();
 
-    interface OrganizationData {
+    interface UserData {
         name: string;
         email: string;
         password: string;
     }
 
-    const initOrganizationData: OrganizationData = {
+    const initOrganizationData: UserData = {
         name: '',
         email: '',
         password: '',
@@ -29,8 +29,8 @@ export default function Home() {
     const [isLogin, setIsLogin] = useState(true);
     const [msg, setMsg] = useState<string>("");
     const [msgColor, setMsgColor] = useState<string>("text-danger");
-    const [formData, setFormData] = useState<OrganizationData>(initOrganizationData);
-    const [formErrors, setFormErrors] = useState<OrganizationData>(initOrganizationData);
+    const [formData, setFormData] = useState<UserData>(initOrganizationData);
+    const [formErrors, setFormErrors] = useState<UserData>(initOrganizationData);
 
 
     function reset() {
@@ -40,7 +40,7 @@ export default function Home() {
     }
 
     function validateField(name: string, value: string) {
-        const errors: OrganizationData = { ...formErrors };
+        const errors: UserData = { ...formErrors };
 
         switch (name) {
             case 'name':

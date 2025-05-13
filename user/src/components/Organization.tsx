@@ -196,8 +196,8 @@ export default function Organization() {
                             key={consent.id}
                             className="list-group-item bg-dark text-white d-flex justify-content-between align-items-center border-white mb-2">
                             <div>
-                                <strong>{consent.name}{!consent.optional && <span className="text-light"> * </span>}</strong>
-                                <span className="text-light">({consent.version})</span>
+                                <strong>{consent.name}{!consent.optional && <span className="text-light"> *</span>}</strong>
+                                <span className="text-light"> ({consent.version})</span>
                             </div>
                             <div className="btn-group">
                                 {
