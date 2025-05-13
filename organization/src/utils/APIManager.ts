@@ -7,17 +7,14 @@ export interface ApiResponse<T = any> {
 }
 
 export const getRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
-    console.log("postRequest");
     try {
         const response = await axios.get<T>(url);
-        console.log("Res: " + response);
 
         return {
             success: true,
             data: response.data,
         };
     } catch (error: any) {
-        console.log("Error");
         const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
 
         return {
@@ -28,18 +25,16 @@ export const getRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
 };
 
 export const postRequest = async <T>(url: string, body: Record<string, any>): Promise<ApiResponse<T>> => {
-    console.log("postRequest");
     try {
         const response = await axios.post<T>(url, body);
-        console.log("Res: " + response);
 
         return {
             success: true,
             data: response.data,
         };
     } catch (error: any) {
-        console.log("Error");
-        const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+        console.log(error);
+        const errorMessage = error.response?.data || error.message || 'Unknown error';
 
         return {
             success: false,
@@ -49,17 +44,14 @@ export const postRequest = async <T>(url: string, body: Record<string, any>): Pr
 };
 
 export const putRequest = async <T>(url: string, body: Record<string, any>): Promise<ApiResponse<T>> => {
-    console.log("postRequest");
     try {
         const response = await axios.put<T>(url, body);
-        console.log("Res: ", response);
 
         return {
             success: true,
             data: response.data,
         };
     } catch (error: any) {
-        console.log("Error");
         const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
 
         return {

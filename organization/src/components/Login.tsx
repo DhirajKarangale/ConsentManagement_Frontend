@@ -125,7 +125,7 @@ export default function Home() {
             setMsg('Error in login, ' + response.error);
         }
 
-        setTimeout(() => { reset(); }, 1000);
+        setTimeout(() => { reset(); }, 3000);
     }
 
     async function createAccount(e: React.FormEvent) {
@@ -143,7 +143,7 @@ export default function Home() {
             setMsg('Error in login, ' + response.error);
         }
 
-        setTimeout(() => { reset(); }, 1000);
+        setTimeout(() => { reset(); }, 3000);
     }
 
     function loginUI() {

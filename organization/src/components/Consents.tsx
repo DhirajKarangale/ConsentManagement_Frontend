@@ -13,7 +13,7 @@ export default function Consents() {
         id: number,
         organizationId: number,
         name: string,
-        isOptional: boolean,
+        optional: boolean,
         version: number,
         description: string,
         expiry: Date,
@@ -41,7 +41,7 @@ export default function Consents() {
     }
 
     async function loadConsents() {
-        const response = await getRequest<Consnet[]>(`${uri_allconsents}/1`);
+        const response = await getRequest<Consnet[]>(`${uri_allconsents}/${organization?.id}`);
 
         if (response.success) {
             if (response.data) setConsnet(response.data);
@@ -76,7 +76,7 @@ export default function Consents() {
                                     <td>{index + 1}</td>
                                     <td>{item.name}</td>
                                     <td>{item.version}</td>
-                                    <td>{item.isOptional ? 'Yes' : 'No'}</td>
+                                    <td>{item.optional ? 'Yes' : 'No'}</td>
                                     <td>{item.status}</td>
                                     <td>
                                         <button onClick={() => {
@@ -111,7 +111,7 @@ export default function Consents() {
                                         <p><strong>Organization ID:</strong> {selectedConsent.organizationId}</p>
                                         <p><strong>Name:</strong> {selectedConsent.name}</p>
                                         <p><strong>Version:</strong> {selectedConsent.version}</p>
-                                        <p><strong>Is Optional:</strong> {selectedConsent.isOptional ? 'Yes' : 'No'}</p>
+                                        <p><strong>Is Optional:</strong> {selectedConsent.optional ? 'Yes' : 'No'}</p>
                                         <p><strong>Status:</strong> {selectedConsent.status}</p>
                                         <p><strong>Created On:</strong> {new Date(selectedConsent?.createdAt).toDateString()}</p>
                                         <p><strong>Expiry:</strong> {new Date(selectedConsent?.expiry).toDateString()}</p>

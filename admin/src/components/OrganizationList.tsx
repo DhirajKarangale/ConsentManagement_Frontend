@@ -55,7 +55,7 @@ export default function OrganizationList() {
         <>
             <div className="container">
 
-                <h1 className="text-center display-6 mt-3" style={{ fontSize: '2.0rem' }}>Consents <hr /> </h1>
+                <h1 className="text-center display-6 mt-3" style={{ fontSize: '2.0rem' }}>Organizations <hr /> </h1>
 
                 <div className="row p-0 m-0">
 

@@ -1,10 +1,14 @@
-import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { type RootState } from "../store/store";
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(true);
-
+    const organization = useSelector((state: RootState) => state.organization);
     const toggleNavbar = () => setIsCollapsed(!isCollapsed);
+
+    if (!organization) return null;
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">

@@ -11,7 +11,7 @@ export default function Organization() {
         id: number,
         organizationId: number,
         name: string,
-        isOptional: boolean,
+        optional: boolean,
         version: number,
         description: string,
         expiry: Date,
@@ -48,6 +48,7 @@ export default function Organization() {
         const response = await getRequest<Consnet[]>(`${uri_allconsents}/${organization?.id}`);
 
         if (response.success) {
+            console.log(response.data);
             if (response.data) setConsnet(response.data);
             else setConsnet([]);
         } else {
@@ -196,7 +197,7 @@ export default function Organization() {
                                     <td>{index + 1}</td>
                                     <td>{item.name}</td>
                                     <td>{item.version}</td>
-                                    <td>{item.isOptional ? 'Yes' : 'No'}</td>
+                                    <td>{item.optional ? 'Yes' : 'No'}</td>
                                     <td>{item.status}</td>
                                     <td>
                                         <button onClick={() => {
@@ -231,7 +232,7 @@ export default function Organization() {
                                         <p><strong>Organization ID:</strong> {selectedConsent.organizationId}</p>
                                         <p><strong>Name:</strong> {selectedConsent.name}</p>
                                         <p><strong>Version:</strong> {selectedConsent.version}</p>
-                                        <p><strong>Is Optional:</strong> {selectedConsent.isOptional ? 'Yes' : 'No'}</p>
+                                        <p><strong>Is Optional:</strong> {selectedConsent.optional ? 'Yes' : 'No'}</p>
                                         <p><strong>Status:</strong> {selectedConsent.status}</p>
                                         <p><strong>Created On:</strong> {new Date(selectedConsent?.createdAt).toDateString()}</p>
                                         <p><strong>Expiry:</strong> {new Date(selectedConsent?.expiry).toDateString()}</p>
@@ -296,229 +297,3 @@ export default function Organization() {
         </div>
     );
 }
-
-
-
-/*
-
-import { useState, useEffect } from "react";
-import { uri_setstatus, uri_allconsent } from "./APIs";
-import { getRequest, putRequest } from "./ApiManager";
-
-export default function Consents() {
-
-    type Consnet = {
-        id: number,
-        type: string,
-        version: number,
-        isOptional: boolean,
-        createdBy: string,
-        expiry: string,
-        description: string,
-        status: string,
-        createdOn: string,
-        approvedBy: string,
-    }
-
-    const [msg, setMsg] = useState<string>("");
-    const [msgColor, setMsgColor] = useState<string>("text-danger");
-    const [consent, setConsnet] = useState<Consnet[]>([]);
-
-    const [selectedConsent, setSelectedConsent] = useState<Consnet | null>(null);
-    const [showModal, setShowModal] = useState(false);
-    const [assignedBy, setAssignedBy] = useState("");
-    const [status, setStatus] = useState("Active");
-
-
-    useEffect(() => { loadConsents(); }, []);
-
-
-    async function loadConsents() {
-        const response = await getRequest<Consnet[]>(uri_allconsent);
-
-        if (response.success) {
-            if (response.data) {
-                setConsnet(response.data);
-            }
-            else {
-                setMsgColor('text-success');
-                setMsg('Consent not available');
-            }
-        } else {
-            setConsnet([]);
-            setMsgColor('text-danger');
-            setMsg('Error in getting consents, ' + response.error);
-        }
-
-        setTimeout(() => { setMsg(''); }, 1000);
-    }
-
-    async function handelSetStatus() {
-        const uri = `${uri_setstatus}/${selectedConsent?.id}`
-        const body = {
-            "approvedBy": assignedBy,
-            "status": status
-        }
-        console.log(uri);
-        const response = await putRequest(uri, body);
-
-        if (response.success) {
-            setMsg(`Consent ${selectedConsent?.id} ${status} by ${assignedBy}`);
-            setMsgColor('text-success');
-        } else {
-            setMsgColor('text-danger');
-            setMsg('Error in adding consent, ' + response.error);
-        }
-
-        setTimeout(() => { setMsg(''); }, 1000);
-    }
-
-    return (
-        <>
-            <div className="container">
-
-                <h1 className="text-center display-6 mt-0" style={{ fontSize: '2.0rem' }}>Consents <hr /> </h1>
-                <p className={`m-0 p-0 fw-bold text-center ${msgColor}`} style={{ minHeight: "1.5em", fontSize: '0.8rem' }}>{msg}</p>
-
-                <div className="row p-0 m-0">
-
-                    <table className="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Type</th>
-                                <th>Version</th>
-                                <th>Is Optional</th>
-                                <th>Created By</th>
-                                <th>Status</th>
-                                <th>More</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {consent.map((item, index) => (
-                                <tr key={item.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.type}</td>
-                                    <td>{item.version}</td>
-                                    <td>{item.isOptional ? 'Yes' : 'No'}</td>
-                                    <td>{item.createdBy}</td>
-                                    <td>{item.status}</td>
-                                    <td>
-                                        <button onClick={() => {
-                                            setStatus(item.status);
-                                            setSelectedConsent(item);
-                                            setShowModal(true);
-
-                                        }} className="btn btn-dark">More</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    {showModal && selectedConsent && (
-                        <div
-                            className="modal d-block"
-                            tabIndex={-1}
-                            role="dialog"
-                            style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-                        >
-                            <div className="modal-dialog modal-lg" role="document">
-                                <div className="modal-content" style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
-
-                                    <div className="modal-header" style={{ flexShrink: 0 }}>
-                                        <h5 className="modal-title">Consent Details</h5>
-                                        <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                                    </div>
-
-                                    <div
-                                        className="modal-body"
-                                        style={{
-                                            overflowY: 'auto',
-                                            flexGrow: 1,
-                                            paddingRight: '1rem',
-                                        }}
-                                    >
-                                        <p><strong>ID:</strong> {selectedConsent.id}</p>
-                                        <p><strong>Type:</strong> {selectedConsent.type}</p>
-                                        <p><strong>Version:</strong> {selectedConsent.version}</p>
-                                        <p><strong>Is Optional:</strong> {selectedConsent.isOptional ? 'Yes' : 'No'}</p>
-                                        <p><strong>Created By:</strong> {selectedConsent.createdBy}</p>
-                                        <p><strong>Status:</strong> {selectedConsent.status}</p>
-                                        <p><strong>Approved By:</strong> {selectedConsent.approvedBy}</p>
-                                        <p><strong>Description:</strong></p>
-                                        <div
-                                            style={{
-                                                border: "1px solid #ccc",
-                                                padding: "0.5rem",
-                                                borderRadius: "4px",
-                                                maxHeight: "200px",
-                                                overflowY: "auto",
-                                                whiteSpace: "pre-wrap"
-                                            }}
-                                        >
-                                            {selectedConsent.description}
-                                        </div>
-                                        <p><strong>Created On:</strong> {selectedConsent.createdOn}</p>
-                                        <p><strong>Expiry:</strong> {selectedConsent.expiry}</p>
-                                    </div>
-
-                                    <div className="modal-footer" style={{ flexShrink: 0 }}>
-                                        <div className="container-fluid">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <label className="form-label">Assigned By</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={assignedBy}
-                                                        onChange={(e) => setAssignedBy(e.target.value)}
-                                                    />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <label className="form-label">Status</label>
-                                                    <select
-                                                        className="form-select"
-                                                        value={status}
-                                                        onChange={(e) => setStatus(e.target.value)}
-                                                    >
-                                                        <option value="APPROVED">APPROVED</option>
-                                                        <option value="CREATED">CREATED</option>
-                                                        <option value="REJECTED">REJECTED</option>
-                                                        <option value="EXPIRED">EXPIRED</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex justify-content-end mt-3">
-                                                <button
-                                                    className="btn btn-primary me-2"
-                                                    onClick={() => {
-                                                        console.log("Assigned By:", assignedBy);
-                                                        console.log("Status:", status);
-                                                        handelSetStatus();
-                                                        setShowModal(false);
-                                                    }}
-                                                >
-                                                    Continue
-                                                </button>
-                                                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                                                    Close
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                </div>
-
-            </div>
-        </>
-    );
-}
-
-*/

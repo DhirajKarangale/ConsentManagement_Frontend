@@ -13,7 +13,7 @@ export default function Users() {
         userId: string,
         userEmail: string,
         consentName: string,
-        isAccepted: boolean,
+        accepted: boolean,
         userName: string
     }
 
@@ -35,7 +35,7 @@ export default function Users() {
     }
 
     async function getUsers() {
-        const response = await getRequest<User[]>(`${uri_users}/1`);
+        const response = await getRequest<User[]>(`${uri_users}/${organization?.id}`);
 
         if (response.success) {
             if (response.data) setUser(response.data);
@@ -75,7 +75,7 @@ export default function Users() {
                                     <td>{item.userEmail}</td>
                                     <td>{item.consentName}</td>
                                     <td>{item.consentId}</td>
-                                    <td>{item.isAccepted ? 'Yes' : 'No'}</td>
+                                    <td>{item.accepted ? 'Yes' : 'No'}</td>
                                 </tr>
                             ))}
                         </tbody>

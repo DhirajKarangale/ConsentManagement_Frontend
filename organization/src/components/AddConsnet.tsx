@@ -11,7 +11,7 @@ export default function AddConsents() {
     interface Consnet {
         name: string;
         version: number;
-        isOptional: boolean;
+        optional: boolean;
         expiry: string;
         description: string;
     }
@@ -19,7 +19,7 @@ export default function AddConsents() {
     interface Errors {
         name: string;
         version: string;
-        isOptional: string;
+        optional: string;
         expiry: string;
         description: string;
     }
@@ -27,7 +27,7 @@ export default function AddConsents() {
     const initFormData: Consnet = {
         name: '',
         version: 0,
-        isOptional: false,
+        optional: false,
         expiry: '',
         description: '',
     };
@@ -35,7 +35,7 @@ export default function AddConsents() {
     const initFormErrors: Errors = {
         name: '',
         version: '',
-        isOptional: '',
+        optional: '',
         expiry: '',
         description: '',
     };
@@ -129,7 +129,7 @@ export default function AddConsents() {
             "name": formData.name,
             "version": formData.version,
             "description": formData.description,
-            "isOptional": formData.isOptional,
+            "optional": formData.optional,
             "expiry": formData.expiry
         }
         const response = await postRequest(uri_addconsent, body);
@@ -215,19 +215,19 @@ export default function AddConsents() {
 
                         <div className="m-0 col-md-4 d-flex flex-column mb-2">
                             <div className="m-0 p-0 form-check custom-checkbox d-flex flex-row gap-3 mt-4">
-                                <label htmlFor="isOptional" className="form-label">Optional</label>
+                                <label htmlFor="optional" className="form-label">Optional</label>
                                 <div className="form-check">
                                     <input
-                                        id="isOptional"
+                                        id="optional"
                                         type="checkbox"
-                                        name="isOptional"
+                                        name="optional"
                                         className="form-check-input"
-                                        checked={formData.isOptional}
+                                        checked={formData.optional}
                                         onChange={(e) => handleChange(e)}
                                     />
                                 </div>
                                 <p className="m-0 p-0 fw-bold text-danger" style={{ minHeight: "1.5em", fontSize: '0.8rem' }}>
-                                    {formErrors.isOptional}
+                                    {formErrors.optional}
                                 </p>
                             </div>
                         </div>
