@@ -56,8 +56,12 @@ export default function Home() {
                 break;
 
             case 'email':
-                if (value.length < 3) {
-                    errors.email = 'Enter valid email';
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!value.trim()) {
+                    errors.email = 'Email is required';
+                } else if (!emailRegex.test(value)) {
+                    errors.email = 'Enter a valid email';
                 } else {
                     errors.email = '';
                 }
